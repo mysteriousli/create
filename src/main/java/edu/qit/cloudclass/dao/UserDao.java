@@ -18,4 +18,7 @@ public interface UserDao {
 
     @Select("select * from user where name = #{name};")
     User login(@Param("name") String name);
+
+    @Select("select * from user where id = #{id};")
+    User getInfo(@Param("id") String id);
 }

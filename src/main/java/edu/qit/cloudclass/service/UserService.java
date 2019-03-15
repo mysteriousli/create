@@ -9,4 +9,5 @@ import edu.qit.cloudclass.domain.User;
 public interface UserService {
     boolean register(String name,String password,String email);
     User login(String name, String password);
+    User getInfo(String id);
 }

@@ -23,7 +23,7 @@ public enum JsonState {
      */
     MISSING_REQUIRED_PARAM(-2,"missing required param"),
     /**
-     *
+     * 权限不足(含登录时账号或密码错误)
      */
     PERMISSION_DENIED(-3,"permission denied");
 

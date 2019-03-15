@@ -55,4 +55,9 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+    @Override
+    public User getInfo(String id) {
+        return dao.getInfo(id);
+    }
 }

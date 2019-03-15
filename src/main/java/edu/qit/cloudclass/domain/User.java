@@ -1,5 +1,6 @@
 package edu.qit.cloudclass.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,9 +15,12 @@ public class User {
     public final static int STUDENT = 0;
     public final static int TEACHER = 1;
 
+    @JsonIgnore
     private String id;
     private String name;
+    @JsonIgnore
     private String password;
+    @JsonIgnore
     private Date createTime;
     private int identity;
     private String email;
