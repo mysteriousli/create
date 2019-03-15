@@ -11,7 +11,7 @@
     <groupId>edu.qit</groupId>
     <artifactId>cloudclass</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>cloudclass</name>
     <description>在线教育平台后台</description>
 
