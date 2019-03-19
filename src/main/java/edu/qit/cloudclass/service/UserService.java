@@ -1,6 +1,7 @@
 package edu.qit.cloudclass.service;
 
 import edu.qit.cloudclass.domain.User;
+import edu.qit.cloudclass.tool.ServerResponse;
 
 /**
  * @author nic
@@ -8,6 +9,7 @@ import edu.qit.cloudclass.domain.User;
  */
 public interface UserService {
     boolean register(String name,String password,String email);
-    User login(String name, String password);
-    User getInfo(String id);
+    ServerResponse<User> login(String name, String password);
+    String registerAutoLogin(User user);
+    ServerResponse<User> autoLogin(String taken);
 }

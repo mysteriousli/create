@@ -24,4 +24,6 @@ public class User {
     private Date createTime;
     private int identity;
     private String email;
+    @JsonIgnore
+    private String taken;
 }

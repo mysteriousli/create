@@ -1,7 +1,9 @@
 package edu.qit.cloudclass.service.impl;
 
+import edu.qit.cloudclass.tool.ResponseCode;
+import edu.qit.cloudclass.tool.ServerResponse;
 import edu.qit.cloudclass.tool.Tool;
-import edu.qit.cloudclass.dao.UserDao;
+import edu.qit.cloudclass.dao.UserMapper;
 import edu.qit.cloudclass.domain.User;
 import edu.qit.cloudclass.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import java.util.Date;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserDao dao;
+    private final UserMapper userMapper;
 
     @Override
     public boolean register(String name, String password, String email) {
@@ -33,7 +35,7 @@ public class UserServiceImpl implements UserService {
         user.setIdentity(User.STUDENT);
         user.setEmail(email);
         try{
-            dao.register(user);
+            userMapper.register(user);
             result = true;
             log.info("用户" + user.getId() + "注册成功!");
         } catch (Exception e){
@@ -43,21 +45,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(String name, String password) {
-        User user = dao.login(name);
+    public ServerResponse<User> login(String name, String password) {
+        User user = userMapper.login(name);
         if (user != null){
             if (BCrypt.checkpw(password,user.getPassword())){
                 log.info("用户" + user.getId() + "登录成功!");
+                return ServerResponse.createBySuccess("登录成功",user);
             }
             else {
-                user = null;
+                return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"密码错误");
             }
         }
-        return user;
+        else {
+            return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"用户名不存在");
+        }
     }
 
     @Override
-    public User getInfo(String id) {
-        return dao.getInfo(id);
+    public String registerAutoLogin(User user) {
+        String source = user.getId() + user.hashCode() + System.currentTimeMillis();
+        String taken = BCrypt.hashpw(source,BCrypt.gensalt());
+        try {
+            userMapper.registerAutoLogin(user.getId(), taken);
+        }catch (Exception e){
+            log.error("自动登录记录失败,用户信息:" + user.toString(),e);
+            taken = null;
+        }
+        return taken;
+    }
+
+    @Override
+    public ServerResponse<User> autoLogin(String taken) {
+        User user = userMapper.autoLogin(taken);
+        if (user != null){
+            return ServerResponse.createBySuccess("登录成功",user);
+        }
+        return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"登录失败");
     }
 }
