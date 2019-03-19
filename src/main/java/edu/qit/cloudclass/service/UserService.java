@@ -8,8 +8,31 @@ import edu.qit.cloudclass.tool.ServerResponse;
  * @version 1.0
  */
 public interface UserService {
-    boolean register(String name,String password,String email);
+    /**
+     * 用户注册
+     * @author 董悦
+     * 2019-03-19
+     */
+    ServerResponse<Void> register(String name,String password,String email);
+
+    /**
+     * 用户登录
+     * @author 董悦
+     * 2019-03-19
+     */
     ServerResponse<User> login(String name, String password);
+
+    /**
+     * 产生并记录用户自动登录凭证
+     * @author 董悦
+     * 2019-03-19
+     */
     String registerAutoLogin(User user);
+
+    /**
+     * 用户自动登录
+     * @author 董悦
+     * 2019-03-19
+     */
     ServerResponse<User> autoLogin(String taken);
 }
