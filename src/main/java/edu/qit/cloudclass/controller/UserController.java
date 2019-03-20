@@ -48,7 +48,7 @@ public class UserController {
     public ServerResponse login(@RequestBody(required = false) Map<String,String> params, HttpServletResponse response, HttpSession session){
         //接收并检查参数
         if (params == null){
-            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),ResponseCode.MISSING_ARGUMENT.getMsg());
+            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"缺少参数");
         }
         String name = params.get("name");
         String password = params.get("password");
