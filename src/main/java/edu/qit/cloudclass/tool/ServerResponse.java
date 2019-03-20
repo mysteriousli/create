@@ -2,8 +2,8 @@ package edu.qit.cloudclass.tool;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Getter
 public class ServerResponse<T> implements Serializable {
     private int status;
-    private String msg;
+    private String msg = "";
     private T date;
 
     private ServerResponse(int status){
