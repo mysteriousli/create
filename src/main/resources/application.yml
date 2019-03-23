@@ -7,3 +7,5 @@ spring:
     url: jdbc:mysql://39.107.102.246:3306/cloudclass?serverTimezone=GMT%2B8
     username: QIT
     password: dy2020@QIT
+mybatis:
+  mapper-locations: classpath:/mapper/**.xml

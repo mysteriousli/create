@@ -25,54 +25,86 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public ServerResponse<Void> register(String name, String password, String email) {
-        User user = new User();
-        user.setId(Tool.uuid());
-        user.setName(name);
-        user.setPassword(BCrypt.hashpw(password,BCrypt.gensalt()));
-        user.setCreateTime(new Date());
-        user.setIdentity(User.STUDENT);
-        user.setEmail(email);
-        try{
-            userMapper.register(user);
-            log.info("用户" + user.getId() + "注册成功!");
-            return ServerResponse.createBySuccessMsg("注册成功");
-        } catch (Exception e){
-            log.error("注册失败,用户信息:" + user.toString(),e);
+    public ServerResponse register(String name, String password, String email) {
+        //唯一性检查
+        ServerResponse response = checkValid(name,User.NAME);
+        if (!response.isSuccess()){
+            return response;
         }
-        return ServerResponse.createByError("注册失败");
+        response = checkValid(email,User.EMAIL);
+        if (!response.isSuccess()){
+            return response;
+        }
+        //创建用户对象
+        User user = User.createUser(name,email);
+        user.setId(Tool.uuid());
+        user.setPassword(BCrypt.hashpw(password,BCrypt.gensalt()));
+        user.setIdentity(User.STUDENT_IDENTITY);
+        //写入数据库
+        userMapper.register(user);
+        log.info("用户" + user.getId() + "注册成功!");
+        return ServerResponse.createBySuccessMsg("注册成功");
     }
 
     @Override
-    public ServerResponse<User> login(String name, String password) {
+    public ServerResponse<User> login(String name, String password,boolean autoLogin) {
+        //查询数据库并判断登录
         User user = userMapper.login(name);
         if (user != null && BCrypt.checkpw(password,user.getPassword())){
             log.info("用户" + user.getId() + "登录成功!");
+            if (autoLogin){
+                //将自动登录凭证写入数据库和用户信息
+                user.setTaken(registerAutoLogin(user).getDate());
+            }
             return ServerResponse.createBySuccess("登录成功",user);
         }
         return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"用户名或密码错误");
     }
 
     @Override
-    public String registerAutoLogin(User user) {
-        String source = user.getId() + user.hashCode() + System.currentTimeMillis();
-        String taken = BCrypt.hashpw(source,BCrypt.gensalt());
-        try {
-            userMapper.registerAutoLogin(user.getId(), taken);
-        }catch (Exception e){
-            log.error("自动登录记录失败,用户信息:" + user.toString(),e);
-            taken = null;
-        }
-        return taken;
-    }
-
-    @Override
     public ServerResponse<User> autoLogin(String taken) {
+        //查询数据库并判断登录
         User user = userMapper.autoLogin(taken);
         if (user != null){
             log.info("用户" + user.getId() + "自动登录成功!");
             return ServerResponse.createBySuccess("登录成功",user);
         }
         return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"登录失败");
+    }
+
+    @Override
+    public ServerResponse<String> registerAutoLogin(User user) {
+        //构建凭证元数据
+        String source = user.getId() + user.hashCode() + System.currentTimeMillis();
+        //编译自动登录凭证
+        String taken = BCrypt.hashpw(source,BCrypt.gensalt());
+        //将自动登录凭证写入数据库
+        userMapper.registerAutoLogin(user.getId(), taken);
+        return ServerResponse.createBySuccess(taken);
+    }
+
+    @Override
+    public ServerResponse checkValid(String str, String type) {
+        switch (type) {
+            case User.NAME: {
+                //用户名唯一性检查
+                int count = userMapper.checkname(str);
+                if (count > 0) {
+                    return ServerResponse.createByError("用户名已存在");
+                }
+                break;
+            }
+            case User.EMAIL: {
+                //邮箱唯一性检查
+                int count = userMapper.checkEmail(str);
+                if (count > 0) {
+                    return ServerResponse.createByError("该邮箱已注册");
+                }
+                break;
+            }
+            default:
+                return ServerResponse.createByError("唯一性检查失败");
+        }
+        return ServerResponse.createBySuccess();
     }
 }

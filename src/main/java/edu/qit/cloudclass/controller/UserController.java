@@ -57,21 +57,18 @@ public class UserController {
             return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"缺少参数");
         }
         //调用Service方法验证登录
-        ServerResponse<User> result = userServer.login(name,password);
+        ServerResponse<User> result = userServer.login(name,password,autoLogin);
         if (!result.isSuccess()) {
             return result;
         }
         //记录会话信息
         session.setAttribute(SESSION_KEY,result.getDate());
-        //自动登录
         if (autoLogin) {
-            String taken = userServer.registerAutoLogin(result.getDate());
-            if (taken != null) {
-                //在Cookie中记录taken
-                Cookie cookie = new Cookie(AUTO_LOGIN_KEY, taken);
-                cookie.setMaxAge(60 * 60 * 24 * 30);
-                response.addCookie(cookie);
-            }
+            //Cookie中写入自动登录凭证
+            String taken = result.getDate().getTaken();
+            Cookie cookie = new Cookie(AUTO_LOGIN_KEY, taken);
+            cookie.setMaxAge(60 * 60 * 24 * 30);
+            response.addCookie(cookie);
         }
         return result;
     }

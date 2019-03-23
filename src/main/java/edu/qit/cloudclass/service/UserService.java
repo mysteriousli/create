@@ -13,21 +13,14 @@ public interface UserService {
      * @author 董悦
      * 2019-03-19
      */
-    ServerResponse<Void> register(String name,String password,String email);
+    ServerResponse register(String name,String password,String email);
 
     /**
      * 用户登录
      * @author 董悦
      * 2019-03-19
      */
-    ServerResponse<User> login(String name, String password);
-
-    /**
-     * 产生并记录用户自动登录凭证
-     * @author 董悦
-     * 2019-03-19
-     */
-    String registerAutoLogin(User user);
+    ServerResponse<User> login(String name, String password,boolean autoLogin);
 
     /**
      * 用户自动登录
@@ -35,4 +28,18 @@ public interface UserService {
      * 2019-03-19
      */
     ServerResponse<User> autoLogin(String taken);
+
+    /**
+     * 产生并记录用户自动登录凭证
+     * @author 董悦
+     * 2019-03-19
+     */
+    ServerResponse<String> registerAutoLogin(User user);
+
+    /**
+     * 检查用户名或电子邮件的唯一性
+     * @author 董悦
+     * 2019-03-23
+     */
+    ServerResponse checkValid(String str,String type);
 }
