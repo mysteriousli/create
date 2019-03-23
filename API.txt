@@ -24,11 +24,11 @@
     }
     1.3 正常返回:
     {
-        "code":0,
+        "status":0,
         "msg":"登录成功",
         "date":{
             "name":"XXX",
-            "identity":X,
+            "identity":X(0=学生,1=教师),
             "email":"XXX"
         }
     }
@@ -40,11 +40,11 @@
     1.2 请求参数:无
     1.3 正常返回:
     {
-        "code":0,
+        "status":0,
         "msg":"登录成功",
         "date":{
             "name":"XXX",
-            "identity":X,
+            "identity":X(0=学生,1=教师),
             "email":"XXX"
         }
     }
