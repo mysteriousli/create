@@ -2,16 +2,15 @@ package edu.qit.cloudclass.tool;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
  * @author nic
  * @version 1.0
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 public class ServerResponse<T> implements Serializable {
     private int status;
@@ -39,31 +38,31 @@ public class ServerResponse<T> implements Serializable {
 
     @JsonIgnore
     public boolean isSuccess(){
-        return this.status == ResponseCode.SUCCESS.getCode();
+        return this.status == ResponseCode.SUCCESS.getStatus();
     }
 
     public static <T> ServerResponse<T> createBySuccess(){
-        return new ServerResponse<>(ResponseCode.SUCCESS.getCode());
+        return new ServerResponse<>(ResponseCode.SUCCESS.getStatus());
     }
 
     public static <T> ServerResponse<T> createBySuccess(T date){
-        return new ServerResponse<>(ResponseCode.SUCCESS.getCode(),date);
+        return new ServerResponse<>(ResponseCode.SUCCESS.getStatus(),date);
     }
 
     public static <T> ServerResponse<T> createBySuccess(String msg,T date){
-        return new ServerResponse<>(ResponseCode.SUCCESS.getCode(),msg,date);
+        return new ServerResponse<>(ResponseCode.SUCCESS.getStatus(),msg,date);
     }
 
     public static <T> ServerResponse<T> createBySuccessMsg(String msg){
-        return new ServerResponse<>(ResponseCode.SUCCESS.getCode(),msg);
+        return new ServerResponse<>(ResponseCode.SUCCESS.getStatus(),msg);
     }
 
     public static <T> ServerResponse<T> createByError(){
-        return new ServerResponse<>(ResponseCode.ERROR.getCode());
+        return new ServerResponse<>(ResponseCode.ERROR.getStatus());
     }
 
     public static <T> ServerResponse<T> createByError(String msg){
-        return new ServerResponse<>(ResponseCode.ERROR.getCode(),msg);
+        return new ServerResponse<>(ResponseCode.ERROR.getStatus(),msg);
     }
 
     public static <T> ServerResponse<T> createByError(int status,String msg){

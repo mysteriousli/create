@@ -32,13 +32,13 @@ public class UserController {
     public ServerResponse register(@RequestBody(required = false) Map<String,String> params){
         //接收并检查参数
         if (params == null){
-            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"缺少参数");
+            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getStatus(),"缺少参数");
         }
         String name = params.get("name");
         String password = params.get("password");
         String email = params.get("email");
         if (!Tool.checkParamsNotNull(name,password,email)) {
-            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"缺少参数");
+            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getStatus(),"缺少参数");
         }
         //调用service方法注册信息
         return userServer.register(name,password,email);
@@ -48,13 +48,13 @@ public class UserController {
     public ServerResponse login(@RequestBody(required = false) Map<String,String> params, HttpServletResponse response, HttpSession session){
         //接收并检查参数
         if (params == null){
-            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"缺少参数");
+            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getStatus(),"缺少参数");
         }
         String name = params.get("name");
         String password = params.get("password");
         boolean autoLogin = Boolean.parseBoolean(params.get("autoLogin"));
         if (!Tool.checkParamsNotNull(name,password)) {
-            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"缺少参数");
+            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getStatus(),"缺少参数");
         }
         //调用Service方法验证登录
         ServerResponse<User> result = userServer.login(name,password,autoLogin);
@@ -78,7 +78,7 @@ public class UserController {
         //获取Cookie
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"未获取Cookie");
+            return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getStatus(),"未获取Cookie");
         }
         //遍历查找凭证
         for (Cookie cookie : cookies) {
@@ -87,6 +87,6 @@ public class UserController {
                 return userServer.autoLogin(cookie.getValue());
             }
         }
-        return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getCode(),"未找到凭证");
+        return ServerResponse.createByError(ResponseCode.MISSING_ARGUMENT.getStatus(),"未找到凭证");
     }
 }

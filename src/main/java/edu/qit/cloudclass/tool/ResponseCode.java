@@ -31,6 +31,6 @@ public enum ResponseCode {
      */
     ILLEGAL_ARGUMENT(-4,"ILLEGAL_ARGUMENT");
 
-    private int code;
+    private int status;
     private String msg;
 }

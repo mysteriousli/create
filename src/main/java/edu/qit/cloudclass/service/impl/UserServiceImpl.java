@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
             }
             return ServerResponse.createBySuccess("登录成功",user);
         }
-        return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"用户名或密码错误");
+        return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getStatus(),"用户名或密码错误");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
             log.info("用户" + user.getId() + "自动登录成功!");
             return ServerResponse.createBySuccess("登录成功",user);
         }
-        return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getCode(),"登录失败");
+        return ServerResponse.createByError(ResponseCode.PERMISSION_DENIED.getStatus(),"登录失败");
     }
 
     @Override
